@@ -1,0 +1,148 @@
+<!-- AWP_In_Variable Name='"WEB".cmd_Start' -->
+<!-- AWP_In_Variable Name='"WEB".cmd_Stop' -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="jquery-2.2.0.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <label id="Byte">0</label>
+    <p>
+    <label id="Counter">0</label>
+    <p>
+    <label id="Tes">xx</label>
+    <p>
+        <form method="post" action="">
+            <input type="hidden" name='"WEB".cmd_Start' value="1">
+            <input type="hidden" name='"WEB".cmd_Stop' value="0">
+            <input type="submit" value="Start">
+        </form>
+        <form method="post" action="">
+            <input type="hidden" name='"WEB".cmd_Stop' value="1">
+            <input type="hidden" name='"WEB".cmd_Start' value="0">
+            <input type="submit" value="Stop">
+        </form>
+        <input type="button" id="Start" value="Button Test" onclick="commandData()">
+    <p>
+        <img id="Indikator1" src="OFF_CONDITION.JPG" width="50" height="50">
+        <img id="Indikator2" src="OFF_CONDITION.JPG" width="50" height="50">
+
+<script type="text/javascript">	
+		//var url = "./io_dat.json";
+        var url = "https://192.168.1.2/awp/PLC_IOT/api.json";
+        var myHeader = new Headers();
+        (function(){
+            if ("Start" == true) {
+                commandData();
+            }	
+			setInterval(reloadData,1000);
+		})();
+
+        // $("StopCount").click(function(){
+        //             //url="IOtriangleWave.htm";
+        //             name='"WEB".cmd_Start';
+        //             //val=$('input[id=setvar]').val();
+        //             sdata=escape(name)+'='+'TRUE';
+        //             $.post(url,sdata,function(result){});
+        //         });
+        
+
+		function reloadData(){
+            
+			var xhr = new XMLHttpRequest();
+            var dataInByte, dataInCounter, dataInReal;
+            var image1, image2;
+            var bool1, bool2;
+			xhr.open("GET", url, + "?" + false);
+            xhr.withCredentials = true;
+			xhr.onload = function (e) {
+			    if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try{
+                            let ioData = JSON.parse(xhr.responseText);
+                            document.getElementById("Counter").innerHTML = ioData.lbl_Counter;
+                            document.getElementById("Byte").innerHTML = ioData.lbl_Byte;
+                            //document.getElementById("Real").innerHTML = ioData.data;
+                            image1 = document.getElementById("Indikator1");
+                            image2 = document.getElementById("Indikator2");
+
+                            bool1 = ioData.ind_bool1;
+                            bool2 = ioData.ind_bool2;
+
+                            if (bool1 == 1){
+                                image1.src = "ON_CONDITION.JPG"
+                            } else{
+                                image1.src = "OFF_CONDITION.JPG"
+                            }
+
+                            if (bool2 == 1){
+                                image2.src = "ON_CONDITION.JPG"
+                            } else{
+                                image2.src = "OFF_CONDITION.JPG"
+                            }
+                        }catch(e){
+
+                        }
+                    }
+                }
+			};
+            
+			xhr.onerror = function (e) {
+			    console.error(xhr.statusText);
+			};
+
+			xhr.send(null);
+		}
+
+        function commandData(){
+            var cmd = new XMLHttpRequest();
+            cmd.open("POST",url,true);
+            cmd.onload = function (e) {
+                if (cmd.readyState == 4) {
+                    if (cmd.status == 200) {
+                        try {
+                            let ioCmd = JSON.parse(cmd.responseText);
+                            ioCmd.stop_count = true;
+                        } catch (e) {
+
+                        }
+                    }
+                }
+            };
+        }
+
+//      $(document).ready(function(){
+//            $.ajaxSetup({ cache: false });
+            
+        
+//            setInterval(function() {
+//                const xhr = new XMLHttpRequest();
+//                xhr.open('get','io_dat.json');
+//                xhr.onload = function(){
+//                    if(this.status == 200){
+//                    try{
+//                        const resObj = JSON.parse(this.responseText);
+//                        console.log(resObj);
+//                    }
+//                    catch(e){
+//                        console.warn('data g mlebu cuk!!')
+//                    }
+//                } else {
+//                    console.warn('Ora ketemu')
+//                }
+//                }
+                
+//            },1000);
+//        });     
+</script>
+
+
+   
+
+</body>
+</html>

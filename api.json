@@ -1,0 +1,12 @@
+<!-- AWP_In_Variable Name='"WEB".cmd_Start' -->
+<!-- AWP_In_Variable Name='"WEB".cmd_Stop' -->
+{
+    "lbl_Byte":":="WEB".Byte:",
+    "lbl_Counter":":="WEB".Counter:",
+    "ind_bool1":":="WEB".bool1:",
+    "ind_bool2":":="WEB".bool2:",
+    
+}
+{
+  '"WEB".cmd_Start"': "stop_count"
+}
